@@ -1,15 +1,17 @@
-LAB - Class 06
-Project: ten-thousand
-Description
+# LAB - Class 06
+
+## Project: ten-thousand
+
+## Description
 Dice 10000 game uses classes whos methods rely on methods from random and collections  python libraries. Dice are rolled and depending on number rolled, a total score based on game scoring methods is returned. 
 
-Author: Monica Ramirez
+## Author: Monica Ramirez
 
 
-Setup
+## Setup
 Initialize application by opening ten-thousand directy on pycharm or preffered code editor. 
 
-Tests
+## Tests
 Tests run with pytest or pytest-watch in venv
 
 The tests included:
