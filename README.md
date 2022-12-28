@@ -25,3 +25,5 @@ The tests included:
 test_calcute_score.py: checks if number rolled on dice and frequency of number matches the games scoring methods.  
 
 test_roll_dice.py: checks if correct number of dice rolled, while also returning a tuple of numbers within a range of a 1-6 (6 sided dice) 
+
+#### testing auth
