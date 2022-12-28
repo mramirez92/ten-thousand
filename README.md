@@ -8,6 +8,8 @@ Dice 10000 game uses classes whos methods rely on methods from random and collec
 ## Author: Monica Ramirez
 
 ## Links and Resources
+[Dice 10000 Wikipedia](https://en.wikipedia.org/wiki/Dice_10000#Scoring)
+
 [Python Counter](https://realpython.com/python-counter/)
 
 [Dictionary Items](https://www.w3schools.com/python/ref_dictionary_items.asp)
