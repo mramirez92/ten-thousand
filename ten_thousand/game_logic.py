@@ -30,7 +30,9 @@ class GameLogic:
                 score += n_of_kind[dice_num]
             elif counts == 4:
                 score += n_of_kind[dice_num]*2
-            else:
-                score += 0
+            elif counts == 5:
+                score += n_of_kind[dice_num]*3
+            elif counts == 6:
+                score += n_of_kind[dice_num]*4
 
         return score
