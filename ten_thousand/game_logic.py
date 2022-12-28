@@ -18,8 +18,18 @@ class GameLogic:
         score = 0
 
         # counter returns value pair ex ({5: 1})
+        # {1:1, 2:1, 3:1, 4:1, 5:1, 6:1} len == 6 -> straight -> returns 1500
 
         counter_dice = Counter(roll)
+
+        # straight
+        if len(counter_dice) == 6:
+            return 1500
+
+        # triple double
+
+        if len(counter_dice) == 3 and all(value == 2 for value in counter_dice.values()):
+            return 1500
 
         for dice_num, counts in counter_dice.items():
             if dice_num == 5 and counts <= 2:
@@ -36,3 +46,4 @@ class GameLogic:
                 score += n_of_kind[dice_num]*4
 
         return score
+

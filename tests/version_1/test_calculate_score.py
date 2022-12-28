@@ -70,7 +70,7 @@ def test_three_ones_and_a_five():
 # @pytest.mark.skip("TODO")
 def test_straight():
     actual = GameLogic.calculate_score((1, 6, 3, 2, 5, 4))
-    expected = 150
+    expected = 1500
     assert actual == expected
 
 
@@ -109,7 +109,7 @@ def test_six_ones():
     assert actual == expected
 
 
-@pytest.mark.skip("TODO")
+# @pytest.mark.skip("TODO")
 @pytest.mark.parametrize(
     "test_input,expected",
     [
