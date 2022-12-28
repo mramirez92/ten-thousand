@@ -7,6 +7,10 @@ Dice 10000 game uses classes whos methods rely on methods from random and collec
 
 ## Author: Monica Ramirez
 
+## Links and Resources
+[Python Counter](https://realpython.com/python-counter/)
+
+[Dictionary Items](https://www.w3schools.com/python/ref_dictionary_items.asp)
 
 ## Setup
 Initialize application by opening ten-thousand directy on pycharm or preffered code editor. 
