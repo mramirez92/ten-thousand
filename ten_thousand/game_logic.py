@@ -4,10 +4,11 @@ from collections import Counter
 
 class GameLogic:
     def __init__(self, num_dice=6):
+        self.current_round = 1
         self.num_dice = num_dice
         self.total_score = 0
         self.round_score = 0
-        self.current_round = 1
+
 
     # kind of its own thing, static method has input and has outputs, just needs a place to live
     # returns tuple of random integers, between 1 and 6
@@ -49,11 +50,12 @@ class GameLogic:
         user_response = input("> ").lower()
 
         if user_response == "y":
-            self.play()
+            print(f"Starting Round {self.current_round}")
+            self.roll()
         else:
             print("OK. Maybe another time")
 
-    def play(self, roller=None):
+    def roll(self, roller=None):
 
         roll = roller or self.roll_dice(self.num_dice)
         print("*** {} ***".format(" ".join(str(num) for num in roll)))
@@ -61,30 +63,51 @@ class GameLogic:
         valid_input = ['1', '2', '3', '4', '5', '6']
         keep_input = input("Enter dice to keep, or (q)uit:")
         if keep_input == "q":
-            print(f"Thanks for playing. You earned {self.total_score} points.")
-            return
+            self.quit()
         else:
             self.keeper(keep_input)
 
     def keeper(self, keep_input):
-        ### testing branches
+
         dice_kept = []
-        current_score = []
         if " " in keep_input:
             dice_kept = [int(num) for num in keep_input.replace(" ", "")]
         else:
             dice_kept = [int(keeper) for keeper in keep_input]
 
-        self.total_score = self.calculate_score(tuple(dice_kept))
-
         # Calculate the score for the round
+        self.round_score = self.calculate_score(tuple(dice_kept))
+
         print("You have {} unbanked points and {} dice remaining".
-              format(self.total_score, self.num_dice - len(dice_kept)))
+              format(self.round_score, self.num_dice - len(dice_kept)))
         print("(r)oll again, (b)ank your points or (q)uit:")
         next_play = input("> ").lower()
 
+        self.valid_answer(next_play)
+
+    def valid_answer(self, next_play):
+
+        while next_play not in ["r", "b", "q"]:
+            print("invalid input")
+            print("(r)oll again, (b)ank your points or (q)uit:")
+            next_play = input("> ").lower()
+
         if next_play == "q":
             self.quit()
+        elif next_play == "b":
+            self.bank()
+        elif next_play == "r":
+            self.roll()
+
+    def bank(self):
+        # add total round score to total score
+        self.total_score += self.round_score
+        print(f"You banked {self.round_score} in round {self.current_round}")
+        self.current_round += 1
+        print(f"Total score is {self.total_score} points")
+        self.round_score=0
+        print(f"Starting Round {self.current_round}")
+        self.roll()
 
     def quit(self):
         print(f"Thanks for playing. You earned {self.total_score} points.")
