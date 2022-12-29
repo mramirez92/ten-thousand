@@ -15,7 +15,8 @@ Dice 10000 game uses classes whos methods rely on methods from random and collec
 [Dictionary Items](https://www.w3schools.com/python/ref_dictionary_items.asp)
 
 ## Setup
-Initialize application by opening ten-thousand directy on pycharm or preffered code editor. 
+Initialize application by opening game_logic.py file inside virtual environment in terminal.
+
 
 ## Tests
 Tests run with pytest or pytest-watch in venv
