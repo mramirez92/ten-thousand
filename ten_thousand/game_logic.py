@@ -9,9 +9,9 @@ class GameLogic:
         self.round_score = 0
         self.current_round = 1
 
-
     # kind of its own thing, static method has input and has outputs, just needs a place to live
     # returns tuple of random integers, between 1 and 6
+
     @staticmethod
     def roll_dice(num_dice):
         return tuple(randint(1, 6) for _ in range(0, num_dice))
@@ -63,22 +63,34 @@ class GameLogic:
         if keep_input == "q":
             print(f"Thanks for playing. You earned {self.total_score} points.")
             return
+        else:
+            self.keeper(keep_input)
+
+    def keeper(self, keep_input):
 
         dice_kept = []
         current_score = []
-        for keeper in keep_input:
-            dice_kept.append(int(keeper))
+        if " " in keep_input:
+            dice_kept = [int(num) for num in keep_input.replace(" ", "")]
+        else:
+            dice_kept = [int(keeper) for keeper in keep_input]
+
+        # for keeper in keep_input:
+        #     dice_kept.append(int(keeper))
         self.total_score = self.calculate_score(tuple(dice_kept))
 
         # Calculate the score for the round
         print("You have {} unbanked points and {} dice remaining".
-              format(self.total_score, self.num_dice - len(keep_input)))
+              format(self.total_score, self.num_dice - len(dice_kept)))
         print("(r)oll again, (b)ank your points or (q)uit:")
         next_play = input("> ").lower()
 
         if next_play == "q":
-            print(f"Thanks for playing. You earned {self.total_score} points.")
-            return
+            self.quit()
+
+    def quit(self):
+        print(f"Thanks for playing. You earned {self.total_score} points.")
+        return
 
 
 if __name__ == "__main__":
