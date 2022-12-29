@@ -3,6 +3,12 @@ from collections import Counter
 
 
 class GameLogic:
+    def __init__(self, num_dice=6):
+        self.num_dice = num_dice
+        self.total_score = 0
+        self.round_score = 0
+        self.current_round = 1
+
 
     # kind of its own thing, static method has input and has outputs, just needs a place to live
     # returns tuple of random integers, between 1 and 6
@@ -29,8 +35,52 @@ class GameLogic:
             elif counts == 3:
                 score += n_of_kind[dice_num]
             elif counts == 4:
-                score += n_of_kind[dice_num]*2
+                score += n_of_kind[dice_num] * 2
             else:
                 score += 0
 
         return score
+
+    def initialized_game(self):
+        print("""
+    Welcome to Dice 100000
+    (y)es to play or (n)o to decline
+            """)
+        user_response = input("> ").lower()
+
+        if user_response == "y":
+            self.play()
+        else:
+            print("OK. Maybe another time")
+
+    def play(self, roller=None):
+
+        roll = roller or self.roll_dice(self.num_dice)
+        print("*** {} ***".format(" ".join(str(num) for num in roll)))
+
+        valid_input = ['1', '2', '3', '4', '5', '6']
+        keep_input = input("Enter dice to keep, or (q)uit:")
+        if keep_input == "q":
+            print(f"Thanks for playing. You earned {self.total_score} points.")
+            return
+
+        dice_kept = []
+        current_score = []
+        for keeper in keep_input:
+            dice_kept.append(int(keeper))
+        self.total_score = self.calculate_score(tuple(dice_kept))
+
+        # Calculate the score for the round
+        print("You have {} unbanked points and {} dice remaining".
+              format(self.total_score, self.num_dice - len(keep_input)))
+        print("(r)oll again, (b)ank your points or (q)uit:")
+        next_play = input("> ").lower()
+
+        if next_play == "q":
+            print(f"Thanks for playing. You earned {self.total_score} points.")
+            return
+
+
+if __name__ == "__main__":
+    play_game = GameLogic()
+    play_game.initialized_game()
