@@ -15,7 +15,8 @@ Dice 10000 game uses classes whos methods rely on methods from random and collec
 [Dictionary Items](https://www.w3schools.com/python/ref_dictionary_items.asp)
 
 ## Setup
-Initialize application by opening ten-thousand directy on pycharm or preffered code editor. 
+Initialize application by opening game_logic.py file inside virtual environment in terminal.
+
 
 ## Tests
 Tests run with pytest or pytest-watch in venv
@@ -25,3 +26,5 @@ The tests included:
 test_calcute_score.py: checks if number rolled on dice and frequency of number matches the games scoring methods.  
 
 test_roll_dice.py: checks if correct number of dice rolled, while also returning a tuple of numbers within a range of a 1-6 (6 sided dice) 
+
+#### testing auth
