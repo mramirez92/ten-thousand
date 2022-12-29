@@ -75,8 +75,6 @@ class GameLogic:
         else:
             dice_kept = [int(keeper) for keeper in keep_input]
 
-        # for keeper in keep_input:
-        #     dice_kept.append(int(keeper))
         self.total_score = self.calculate_score(tuple(dice_kept))
 
         # Calculate the score for the round
