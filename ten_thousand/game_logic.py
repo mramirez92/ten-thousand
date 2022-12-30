@@ -1,15 +1,17 @@
 from random import randint
 from collections import Counter
-from textwrap import dedent
+import re
 
 
 class GameLogic:
     def __init__(self, num_dice=6):
+        self.current_roll = ()
         self.round = 1
         self.num_dice = num_dice
         self.current_play_score = 0
         self.round_score = 0
         self.total_score = 0
+        self.dice_kept = []
 
     # kind of its own thing, static method has input and has outputs, just needs a place to live
     # returns tuple of random integers, between 1 and 6
@@ -59,7 +61,6 @@ class GameLogic:
         print(f"Starting Round {self.round}")
         print("Rolling 6 dice...")
 
-
     def initialized_game(self):
         print("Welcome to Dice 100000")
         print("(y)es to play or (n)o to decline")
@@ -67,49 +68,65 @@ class GameLogic:
 
         if user_response == "y":
             self.round_start_msg()
-
             self.roll()
         else:
             print("OK. Maybe another time")
 
     def roll(self, roller=None):
+        self.current_roll = roller or self.roll_dice(self.num_dice)
+        print("*** {} ***".format(" ".join(str(num) for num in self.current_roll)))
 
-        roll = roller or self.roll_dice(self.num_dice)
-        print("*** {} ***".format(" ".join(str(num) for num in roll)))
-
-        valid_input = ['1', '2', '3', '4', '5', '6']
         keep_input = input("Enter dice to keep, or (q)uit:")
         if keep_input == "q":
             self.quit()
-        else:
-            self.keeper(keep_input)
+
+        self.dice_kept = [int(keeper) for keeper in re.sub(r'[^0-9]', '', keep_input)]
+
+        while True:
+            if all(nums in self.current_roll for nums in self.dice_kept):
+                break
+            else:
+                print("Cheater!!!")
+                print("Or possibly made a typo...")
+                print("*** {} ***".format(" ".join(str(num) for num in self.current_roll)))
+                keep_input = input("Enter dice to keep, or (q)uit:")
+
+        self.keeper(keep_input)
+
+    # def validate_input(self, roll, keepers):
+    #             roll_count = Counter(self.current_roll)
+    #             dice_count = Counter(self.dice_kept)
+    #
+    #             for number, count in dice_count.items():
+    #                 if number not in roll_count:
+    #                     return False
+    #                 elif count > roll_count[number]:
+    #                  return False
+    #             return True
 
     def keeper(self, keep_input):
 
-        dice_kept = []
-        if " " in keep_input:
-            dice_kept = [int(num) for num in keep_input.replace(" ", "")]
-        else:
-            dice_kept = [int(keeper) for keeper in keep_input]
+        self.dice_kept = [int(keeper) for keeper in re.sub(r'[^0-9]', '', keep_input)]
 
         # Calculate the score for the round
-        self.current_play_score = self.calculate_score(tuple(dice_kept))
+        self.current_play_score = self.calculate_score(tuple(self.dice_kept))
         self.round_score += self.current_play_score
 
         if self.current_play_score == 0:
             self.zilch()
         else:
             print("You have {} unbanked points and {} dice remaining".
-                  format(self.round_score, self.num_dice - len(dice_kept)))
+                  format(self.round_score, self.num_dice - len(self.dice_kept)))
             print("(r)oll again, (b)ank your points or (q)uit:")
             next_play = input("> ").lower()
-            self.valid_answer(next_play)
+            self.valid_next_move(next_play)
 
     def zilch(self):
         print("You zilched!")
         self.round += 1
         print(f"Your total score is {self.total_score} points.")
         self.round_start_msg()
+        self.roll()
 
     def bank(self):
         # add total round score to total score
@@ -125,7 +142,7 @@ class GameLogic:
         print(f"Thanks for playing. You earned {self.total_score} points.")
         return
 
-    def valid_answer(self, next_play):
+    def valid_next_move(self, next_play):
 
         while next_play not in ["r", "b", "q"]:
             print("invalid input")
