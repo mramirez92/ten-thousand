@@ -1,14 +1,15 @@
 from random import randint
 from collections import Counter
+from textwrap import dedent
 
 
 class GameLogic:
     def __init__(self, num_dice=6):
-        self.current_round = 1
+        self.round = 1
         self.num_dice = num_dice
-        self.total_score = 0
+        self.current_play_score = 0
         self.round_score = 0
-
+        self.total_score = 0
 
     # kind of its own thing, static method has input and has outputs, just needs a place to live
     # returns tuple of random integers, between 1 and 6
@@ -42,15 +43,19 @@ class GameLogic:
 
         return score
 
+    def round_start_msg(self):
+        print(f"Starting Round {self.round}")
+        print("Rolling 6 dice...")
+
+
     def initialized_game(self):
-        print("""
-    Welcome to Dice 100000
-    (y)es to play or (n)o to decline
-            """)
+        print("Welcome to Dice 100000")
+        print("(y)es to play or (n)o to decline")
         user_response = input("> ").lower()
 
         if user_response == "y":
-            print(f"Starting Round {self.current_round}")
+            self.round_start_msg()
+
             self.roll()
         else:
             print("OK. Maybe another time")
@@ -76,14 +81,37 @@ class GameLogic:
             dice_kept = [int(keeper) for keeper in keep_input]
 
         # Calculate the score for the round
-        self.round_score = self.calculate_score(tuple(dice_kept))
+        self.current_play_score = self.calculate_score(tuple(dice_kept))
+        self.round_score += self.current_play_score
 
-        print("You have {} unbanked points and {} dice remaining".
-              format(self.round_score, self.num_dice - len(dice_kept)))
-        print("(r)oll again, (b)ank your points or (q)uit:")
-        next_play = input("> ").lower()
+        if self.current_play_score == 0:
+            self.zilch()
+        else:
+            print("You have {} unbanked points and {} dice remaining".
+                  format(self.round_score, self.num_dice - len(dice_kept)))
+            print("(r)oll again, (b)ank your points or (q)uit:")
+            next_play = input("> ").lower()
+            self.valid_answer(next_play)
 
-        self.valid_answer(next_play)
+    def zilch(self):
+        print("You zilched!")
+        self.round += 1
+        print(f"Your total score is {self.total_score} points.")
+        self.round_start_msg()
+
+    def bank(self):
+        # add total round score to total score
+        self.total_score += self.round_score
+        print(f"You banked {self.round_score} in round {self.round}")
+        self.round += 1
+        self.round_score = 0
+        print(f"Total score is {self.total_score} points")
+        self.round_start_msg()
+        self.roll()
+
+    def quit(self):
+        print(f"Thanks for playing. You earned {self.total_score} points.")
+        return
 
     def valid_answer(self, next_play):
 
@@ -98,20 +126,6 @@ class GameLogic:
             self.bank()
         elif next_play == "r":
             self.roll()
-
-    def bank(self):
-        # add total round score to total score
-        self.total_score += self.round_score
-        print(f"You banked {self.round_score} in round {self.current_round}")
-        self.current_round += 1
-        print(f"Total score is {self.total_score} points")
-        self.round_score=0
-        print(f"Starting Round {self.current_round}")
-        self.roll()
-
-    def quit(self):
-        print(f"Thanks for playing. You earned {self.total_score} points.")
-        return
 
 
 if __name__ == "__main__":
