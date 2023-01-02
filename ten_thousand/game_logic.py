@@ -4,15 +4,6 @@ import re
 
 
 class GameLogic:
-    def __init__(self, num_dice=6):
-        self.current_roll = ()
-        self.round = 1
-        self.num_dice = num_dice
-        self.current_play_score = 0
-        self.round_score = 0
-        self.total_score = 0
-        self.dice_kept = []
-
     # kind of its own thing, static method has input and has outputs, just needs a place to live
     # returns tuple of random integers, between 1 and 6
 
@@ -28,8 +19,18 @@ class GameLogic:
         score = 0
 
         # counter returns value pair ex ({5: 1})
+        # {1:1, 2:1, 3:1, 4:1, 5:1, 6:1} len == 6 -> straight -> returns 1500
 
         counter_dice = Counter(roll)
+
+        # straight
+        if len(counter_dice) == 6:
+            return 1500
+
+        # triple double
+
+        if len(counter_dice) == 3 and all(value == 2 for value in counter_dice.values()):
+            return 1500
 
         for dice_num, counts in counter_dice.items():
             if dice_num == 5 and counts <= 2:
@@ -40,113 +41,24 @@ class GameLogic:
                 score += n_of_kind[dice_num]
             elif counts == 4:
                 score += n_of_kind[dice_num] * 2
-            else:
-                score += 0
+            elif counts == 5:
+                score += n_of_kind[dice_num] * 3
+            elif counts == 6:
+                score += n_of_kind[dice_num] * 4
 
         return score
 
-    def round_start_msg(self):
-        print(f"Starting Round {self.round}")
-        print("Rolling 6 dice...")
+    @staticmethod
+    def validate_keepers(dice_roll, dice_kept):
+        dice_roll_validation = Counter(dice_roll)
+        dice_kept_validation = Counter(dice_kept)
 
-    def initialized_game(self):
-        print("Welcome to Dice 100000")
-        print("(y)es to play or (n)o to decline")
-        user_response = input("> ").lower()
-
-        if user_response == "y":
-            self.round_start_msg()
-            self.roll()
+        if len(dice_kept_validation) <= len(dice_roll_validation):
+            if all(dice_kept_validation[key] <= dice_roll_validation[key] for key in dice_kept_validation.keys()):
+                return True
+            return False
         else:
-            print("OK. Maybe another time")
+            return False
 
-    def roll(self, roller=None):
-        self.current_roll = roller or self.roll_dice(self.num_dice)
-        print("*** {} ***".format(" ".join(str(num) for num in self.current_roll)))
-
-        keep_input = input("Enter dice to keep, or (q)uit:")
-        if keep_input == "q":
-            self.quit()
-
-        self.dice_kept = [int(keeper) for keeper in re.sub(r'[^0-9]', '', keep_input)]
-
-        while True:
-            if all(nums in self.current_roll for nums in self.dice_kept):
-                break
-            else:
-                print("Cheater!!!")
-                print("Or possibly made a typo...")
-                print("*** {} ***".format(" ".join(str(num) for num in self.current_roll)))
-                keep_input = input("Enter dice to keep, or (q)uit:")
-
-        self.keeper(keep_input)
-
-    # def validate_input(self, roll, keepers):
-    #             roll_count = Counter(self.current_roll)
-    #             dice_count = Counter(self.dice_kept)
-    #
-    #             for number, count in dice_count.items():
-    #                 if number not in roll_count:
-    #                     return False
-    #                 elif count > roll_count[number]:
-    #                  return False
-    #             return True
-
-    def keeper(self, keep_input):
-
-        self.dice_kept = [int(keeper) for keeper in re.sub(r'[^0-9]', '', keep_input)]
-
-        # Calculate the score for the round
-        self.current_play_score = self.calculate_score(tuple(self.dice_kept))
-        self.round_score += self.current_play_score
-
-        if self.current_play_score == 0:
-            self.zilch()
-        else:
-            print("You have {} unbanked points and {} dice remaining".
-                  format(self.round_score, self.num_dice - len(self.dice_kept)))
-            print("(r)oll again, (b)ank your points or (q)uit:")
-            next_play = input("> ").lower()
-            self.valid_next_move(next_play)
-
-    def zilch(self):
-        print("You zilched!")
-        self.round += 1
-        print(f"Your total score is {self.total_score} points.")
-        self.round_start_msg()
-        self.roll()
-
-    def bank(self):
-        # add total round score to total score
-        self.total_score += self.round_score
-        print(f"You banked {self.round_score} in round {self.round}")
-        self.round += 1
-        self.round_score = 0
-        print(f"Total score is {self.total_score} points")
-        self.round_start_msg()
-        self.roll()
-
-    def quit(self):
-        print(f"Thanks for playing. You earned {self.total_score} points.")
-        return
-
-    def valid_next_move(self, next_play):
-
-        while next_play not in ["r", "b", "q"]:
-            print("invalid input")
-            print("(r)oll again, (b)ank your points or (q)uit:")
-            next_play = input("> ").lower()
-
-        if next_play == "q":
-            self.quit()
-        elif next_play == "b":
-            self.bank()
-        elif next_play == "r":
-            self.roll()
-
-
-if __name__ == "__main__":
-    play_game = GameLogic()
-    play_game.initialized_game()
 
 
