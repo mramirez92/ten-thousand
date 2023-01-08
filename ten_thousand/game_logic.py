@@ -46,7 +46,6 @@ class GameLogic:
             elif counts == 6:
                 score += n_of_kind[dice_num] * 4
 
-
         return score
 
     @staticmethod
@@ -60,5 +59,3 @@ class GameLogic:
             return False
         else:
             return False
-
-
