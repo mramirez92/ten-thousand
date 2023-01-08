@@ -67,6 +67,7 @@ class Game:
                     **       Zilch!!! Round over          **
                     ****************************************
                     """))
+                    self.round_score = 0
                     self.round_reset()
                     break
 
